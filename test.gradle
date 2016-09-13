@@ -1,0 +1,12 @@
+def process;
+
+test {
+    include '**/*UnitTest.class'
+
+    beforeTest { descriptor ->
+        logger.lifecycle("Running test: " + descriptor)
+    }
+    onOutput { descriptor, event ->
+        logger.lifecycle("Test: " + descriptor + ":" + event.message)
+    }
+}
