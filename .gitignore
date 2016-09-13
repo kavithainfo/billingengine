@@ -1,0 +1,23 @@
+# Mac preview files
+.DS_Store
+
+# IntelliJ project files
+*.iml
+*.ipr
+*.iws
+.idea
+out/
+
+# Target directories
+target/
+build/
+.gradle/
+classes/
+
+# Build metadata
+build-progess.meta
+build.meta
+
+# Log directories
+*.log
+logs/
