@@ -34,7 +34,7 @@ public class DiscountApplicatorUnitTest {
 
         final Map<Service, Optional<Discount>> servicesAndDiscounts = singletonMap(ecg, empty());
 
-        final List<PricedService> pricedServices = discountApplicator.applyDiscounts(servicesAndDiscounts);
+        final List<PricedService> pricedServices = discountApplicator.apply(servicesAndDiscounts);
 
         final PricedService pricedService = new PricedService(ECG, 1, defaultPrice, ZERO, defaultPrice, empty());
 
@@ -49,7 +49,7 @@ public class DiscountApplicatorUnitTest {
 
         final Map<Service, Optional<Discount>> servicesAndDiscounts = singletonMap(xray, of(discount));
 
-        final List<PricedService> pricedServices = discountApplicator.applyDiscounts(servicesAndDiscounts);
+        final List<PricedService> pricedServices = discountApplicator.apply(servicesAndDiscounts);
 
         final PricedService expectedDiscountedService = new PricedService(XRAY, 1, defaultPrice, ZERO, new BigDecimal("36.000"), of(discount));
 
@@ -65,7 +65,7 @@ public class DiscountApplicatorUnitTest {
 
         final Map<Service, Optional<Discount>> servicesAndDiscounts = singletonMap(vaccine, of(discount));
 
-        final List<PricedService> pricedServices = discountApplicator.applyDiscounts(servicesAndDiscounts);
+        final List<PricedService> pricedServices = discountApplicator.apply(servicesAndDiscounts);
 
         final PricedService expectedDiscountedService = new PricedService(VACCINE, 3, defaultPrice, serviceCharge, new BigDecimal("26.150"), of(discount));
 
@@ -87,7 +87,7 @@ public class DiscountApplicatorUnitTest {
                 .put(ecg, of(discount))
                 .build();
 
-        final List<PricedService> pricedServices = discountApplicator.applyDiscounts(servicesAndDiscounts);
+        final List<PricedService> pricedServices = discountApplicator.apply(servicesAndDiscounts);
 
         final PricedService discountedDiagnosis = new PricedService(DIAGNOSIS, 2, diagnosisDefaultPrice, ZERO, new BigDecimal("48.000") ,of(discount));
         final PricedService discountedEcg = new PricedService(ECG, 1, ecgDefaultPrice, ZERO, new BigDecimal("80.160"), of(discount));

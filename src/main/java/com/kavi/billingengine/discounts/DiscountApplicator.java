@@ -8,16 +8,18 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
-public class DiscountApplicator {
+public class DiscountApplicator implements Function<Map<Service, Optional<Discount>>, List<PricedService>> {
 
     private final BigDecimal HUNDRED = new BigDecimal("100");
 
-    public List<PricedService> applyDiscounts(Map<Service, Optional<Discount>> servicesAndDiscounts) {
+    @Override
+    public List<PricedService> apply(Map<Service, Optional<Discount>> servicesAndDiscounts) {
         return servicesAndDiscounts.entrySet().stream()
                 .map(e -> {
                     final Service service = e.getKey();

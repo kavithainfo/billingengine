@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public class PricedService extends Service {
 
-    private final BigDecimal finalTotalPrice;
+    private final BigDecimal totalDiscountedPrice;
     private final Optional<Discount> appliedDiscount;
 
     public PricedService(
@@ -13,15 +13,15 @@ public class PricedService extends Service {
             Integer quantity,
             BigDecimal defaultPrice,
             BigDecimal serviceCharge,
-            BigDecimal finalTotalPrice,
+            BigDecimal totalDiscountedPrice,
             Optional<Discount> appliedDiscount) {
         super(serviceType, quantity, defaultPrice, serviceCharge);
-        this.finalTotalPrice = finalTotalPrice;
+        this.totalDiscountedPrice = totalDiscountedPrice;
         this.appliedDiscount = appliedDiscount;
     }
 
-    public BigDecimal getFinalTotalPrice() {
-        return finalTotalPrice;
+    public BigDecimal getTotalDiscountedPrice() {
+        return totalDiscountedPrice;
     }
 
     public Optional<Discount> getAppliedDiscount() {
@@ -36,7 +36,7 @@ public class PricedService extends Service {
 
         PricedService that = (PricedService) o;
 
-        if (!finalTotalPrice.equals(that.finalTotalPrice)) return false;
+        if (!totalDiscountedPrice.equals(that.totalDiscountedPrice)) return false;
         return appliedDiscount.equals(that.appliedDiscount);
 
     }
@@ -44,16 +44,20 @@ public class PricedService extends Service {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + finalTotalPrice.hashCode();
+        result = 31 * result + totalDiscountedPrice.hashCode();
         result = 31 * result + appliedDiscount.hashCode();
         return result;
     }
 
     @Override
     public String toString() {
-        return "PricedService{" +
-                "finalTotalPrice=" + finalTotalPrice +
-                ", appliedDiscount=" + appliedDiscount +
-                '}';
+        return "{" +
+                "Service Name: " + getServiceType() +
+                ", Quantity: " + getQuantity() +
+                ", Default Price: " + getDefaultPrice() +
+                ", Service Charge: " + getServiceCharge() +
+                ", Total price after discount: " + totalDiscountedPrice +
+                ", appliedDiscount: " + appliedDiscount +
+                "}\n";
     }
 }
