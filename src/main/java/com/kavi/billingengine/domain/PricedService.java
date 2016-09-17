@@ -1,30 +1,30 @@
 package com.kavi.billingengine.domain;
 
 import java.math.BigDecimal;
-import java.util.Optional;
+import java.util.List;
 
 public class PricedService extends Service {
 
-    private final BigDecimal totalDiscountedPrice;
-    private final Optional<Discount> appliedDiscount;
+    private final Integer finalDiscountedPrice;
+    private final List<Discount> appliedDiscount;
 
     public PricedService(
             ServiceType serviceType,
             Integer quantity,
             BigDecimal defaultPrice,
             BigDecimal serviceCharge,
-            BigDecimal totalDiscountedPrice,
-            Optional<Discount> appliedDiscount) {
+            Integer finalDiscountedPrice,
+            List<Discount> appliedDiscount) {
         super(serviceType, quantity, defaultPrice, serviceCharge);
-        this.totalDiscountedPrice = totalDiscountedPrice;
+        this.finalDiscountedPrice = finalDiscountedPrice;
         this.appliedDiscount = appliedDiscount;
     }
 
-    public BigDecimal getTotalDiscountedPrice() {
-        return totalDiscountedPrice;
+    public Integer getFinalDiscountedPrice() {
+        return finalDiscountedPrice;
     }
 
-    public Optional<Discount> getAppliedDiscount() {
+    public List<Discount> getAppliedDiscount() {
         return appliedDiscount;
     }
 
@@ -36,7 +36,7 @@ public class PricedService extends Service {
 
         PricedService that = (PricedService) o;
 
-        if (!totalDiscountedPrice.equals(that.totalDiscountedPrice)) return false;
+        if (!finalDiscountedPrice.equals(that.finalDiscountedPrice)) return false;
         return appliedDiscount.equals(that.appliedDiscount);
 
     }
@@ -44,7 +44,7 @@ public class PricedService extends Service {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + totalDiscountedPrice.hashCode();
+        result = 31 * result + finalDiscountedPrice.hashCode();
         result = 31 * result + appliedDiscount.hashCode();
         return result;
     }
@@ -56,7 +56,7 @@ public class PricedService extends Service {
                 ", Quantity: " + getQuantity() +
                 ", Default Price: " + getDefaultPrice() +
                 ", Service Charge: " + getServiceCharge() +
-                ", Total price after discount: " + totalDiscountedPrice +
+                ", Total price after discount: " + finalDiscountedPrice +
                 ", appliedDiscount: " + appliedDiscount +
                 "}\n";
     }

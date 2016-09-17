@@ -7,17 +7,17 @@ public class BillingRequest {
     private final List<Service> services;
     private final Integer age;
     private final Boolean hasHealthInsurance;
-    private final Boolean hasHadMediHealthDiagnosis;
+    private final Boolean hasBeenDiagnosed;
 
     public BillingRequest(
             List<Service> services,
             Integer age,
             Boolean hasHealthInsurance,
-            Boolean hasHadMediHealthDiagnosis) {
+            Boolean hasBeenDiagnosed) {
         this.services = services;
         this.age = age;
         this.hasHealthInsurance = hasHealthInsurance;
-        this.hasHadMediHealthDiagnosis = hasHadMediHealthDiagnosis;
+        this.hasBeenDiagnosed = hasBeenDiagnosed;
     }
 
     public List<Service> getServices() {
@@ -32,8 +32,8 @@ public class BillingRequest {
         return hasHealthInsurance;
     }
 
-    public Boolean getHasHadMediHealthDiagnosis() {
-        return hasHadMediHealthDiagnosis;
+    public Boolean getHasBeenDiagnosed() {
+        return hasBeenDiagnosed;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class BillingRequest {
         if (!services.equals(that.services)) return false;
         if (!age.equals(that.age)) return false;
         if (!hasHealthInsurance.equals(that.hasHealthInsurance)) return false;
-        return hasHadMediHealthDiagnosis.equals(that.hasHadMediHealthDiagnosis);
+        return hasBeenDiagnosed.equals(that.hasBeenDiagnosed);
 
     }
 
@@ -55,7 +55,7 @@ public class BillingRequest {
         int result = services.hashCode();
         result = 31 * result + age.hashCode();
         result = 31 * result + hasHealthInsurance.hashCode();
-        result = 31 * result + hasHadMediHealthDiagnosis.hashCode();
+        result = 31 * result + hasBeenDiagnosed.hashCode();
         return result;
     }
 
@@ -65,7 +65,7 @@ public class BillingRequest {
                 "services=" + services +
                 ", age=" + age +
                 ", hasHealthInsurance=" + hasHealthInsurance +
-                ", hasHadMediHealthDiagnosis=" + hasHadMediHealthDiagnosis +
+                ", hasBeenDiagnosed=" + hasBeenDiagnosed +
                 '}';
     }
 }

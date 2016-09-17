@@ -1,46 +1,43 @@
 package com.kavi.billingengine.discounts;
 
+import com.kavi.billingengine.discounts.rule.RuleProcessor;
 import com.kavi.billingengine.domain.Discount;
 import com.kavi.billingengine.domain.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 
 public class ApplicableDiscountsFinder {
 
-    public Map<Service, Optional<Discount>> findApplicableDiscounts(
-            List<Service> servicesRequested,
+    private final List<RuleProcessor> ruleProcessors;
+
+    public ApplicableDiscountsFinder(List<RuleProcessor> ruleProcessors) {
+        this.ruleProcessors = ruleProcessors;
+    }
+
+    public Map<Service, List<Discount>> find(
+            List<Service> requestedServices,
             Integer age,
-            Boolean hasMediHealthInsurance,
-            Boolean isDiagnosedByMediHealth) {
-        if (servicesRequested.isEmpty()) {
+            Boolean hasInsurance,
+            Boolean hasBeenDiagnosed) {
+        if (requestedServices.isEmpty()) {
             return emptyMap();
         }
 
-        final Optional<Discount> applicableDiscount = processRules(age);
-
-        return servicesRequested.stream()
-                .map(s -> singletonMap(s, applicableDiscount))
-                .flatMap(l -> l.entrySet().stream())
+        return requestedServices.stream()
+                .map(s -> {
+                    final List<Discount> discounts = ruleProcessors.stream()
+                            .map(rp -> rp.process(s, age, hasInsurance, hasBeenDiagnosed))
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toList());
+                    return singletonMap(s, discounts);
+                })
+                .flatMap(m -> m.entrySet().stream())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    private Optional<Discount> processRules(Integer age) {
-        if(age < 5) {
-            return of(new Discount("40% off", 40));
-        } else if(age >= 65 && age <= 70) {
-            return of(new Discount("60% off", 60));
-        } else if(age > 70) {
-            return of(new Discount("90% off", 90));
-        } else {
-            return empty();
-        }
     }
 }

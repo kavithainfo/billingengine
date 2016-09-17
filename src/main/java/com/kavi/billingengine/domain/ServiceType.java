@@ -4,7 +4,7 @@ public enum ServiceType {
 
     DIAGNOSIS,
     XRAY,
-    BLODD_TEST,
+    BLOOD_TEST,
     ECG,
     VACCINE;
 

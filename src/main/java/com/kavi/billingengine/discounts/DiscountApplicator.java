@@ -7,56 +7,58 @@ import com.kavi.billingengine.domain.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
+import static java.math.RoundingMode.HALF_DOWN;
 
-public class DiscountApplicator implements Function<Map<Service, Optional<Discount>>, List<PricedService>> {
+public class DiscountApplicator implements Function<Map<Service, List<Discount>>, List<PricedService>> {
 
     private final BigDecimal HUNDRED = new BigDecimal("100");
 
     @Override
-    public List<PricedService> apply(Map<Service, Optional<Discount>> servicesAndDiscounts) {
-        return servicesAndDiscounts.entrySet().stream()
+    public List<PricedService> apply(Map<Service, List<Discount>> applicableDiscountsForServices) {
+        return applicableDiscountsForServices.entrySet().stream()
                 .map(e -> {
+                    final List<Discount> discounts = e.getValue();
                     final Service service = e.getKey();
-                    final Optional<Discount> discount = e.getValue();
-                    return discount
-                            .map(d -> applyDiscount(service, d))
-                            .orElse(new PricedService(
-                                    service.getServiceType(),
-                                    service.getQuantity(),
-                                    service.getDefaultPrice(),
-                                    service.getServiceCharge(),
-                                    service.getDefaultPrice(),
-                                    empty())
-                            );
-                }).collect(Collectors.toList());
+
+                    final BigDecimal totalPrice = calculateTotalPrice(
+                            service.getDefaultPrice(),
+                            service.getServiceCharge(),
+                            service.getQuantity()
+                    );
+
+                    final BigDecimal finalDiscountedPrice = discounts.stream()
+                            .reduce(totalPrice, this::applyDiscount, (p1, p2) -> p2);
+
+                    return new PricedService(
+                            service.getServiceType(),
+                            service.getQuantity(),
+                            service.getDefaultPrice(),
+                            service.getServiceCharge(),
+                            roundOff(finalDiscountedPrice),
+                            discounts
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
-    private PricedService applyDiscount(Service service, Discount discount) {
-        final BigDecimal totalPrice = service.getDefaultPrice()
-                .multiply(new BigDecimal(service.getQuantity()))
-                .add(service.getServiceCharge());
+    private BigDecimal calculateTotalPrice(BigDecimal defaultPrice, BigDecimal serviceCharge, Integer quantity) {
+        return defaultPrice
+                .multiply(new BigDecimal(quantity))
+                .add(serviceCharge);
+    }
 
+    private BigDecimal applyDiscount(BigDecimal totalPrice, Discount discount) {
         final BigDecimal discountAmount = totalPrice
                 .multiply(new BigDecimal(discount.getPercentageDiscount())
                         .divide(HUNDRED));
 
-        final BigDecimal finalDiscountedPrice = totalPrice.subtract(discountAmount);
+        return totalPrice.subtract(discountAmount);
+    }
 
-        final PricedService discountedService = new PricedService(
-                service.getServiceType(),
-                service.getQuantity(),
-                service.getDefaultPrice(),
-                service.getServiceCharge(),
-                finalDiscountedPrice,
-                of(discount)
-        );
-
-        return discountedService;
+    private Integer roundOff(BigDecimal price) {
+        return price.setScale(2, HALF_DOWN).intValue();
     }
 }

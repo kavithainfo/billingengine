@@ -10,10 +10,6 @@ public class Discount {
         this.percentageDiscount = percentageDiscount;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public Integer getPercentageDiscount() {
         return percentageDiscount;
     }

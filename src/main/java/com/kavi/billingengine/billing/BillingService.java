@@ -9,7 +9,6 @@ import com.kavi.billingengine.domain.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class BillingService {
 
@@ -22,11 +21,11 @@ public class BillingService {
     }
 
     public List<PricedService> chargeMedicalServices(BillingRequest billingRequest) {
-        final Map<Service, Optional<Discount>> applicableDiscounts = applicableDiscountsFinder.findApplicableDiscounts(
+        final Map<Service, List<Discount>> applicableDiscounts = applicableDiscountsFinder.find(
                 billingRequest.getServices(),
                 billingRequest.getAge(),
                 billingRequest.getHasHealthInsurance(),
-                billingRequest.getHasHadMediHealthDiagnosis()
+                billingRequest.getHasBeenDiagnosed()
         );
 
         final List<PricedService> pricedServices = discountApplicator.apply(applicableDiscounts);
