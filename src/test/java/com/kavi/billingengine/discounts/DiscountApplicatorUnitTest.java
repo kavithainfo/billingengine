@@ -23,7 +23,7 @@ public class DiscountApplicatorUnitTest {
 
     @Test
     public void shouldReturnDefaultPriceWhenNoDiscountToApply() {
-        final BigDecimal defaultPrice = new BigDecimal("400.78");
+        final BigDecimal defaultPrice = new BigDecimal("400");
         final Service ecg = new Service(ECG, 1, defaultPrice, ZERO);
 
         final Map<Service, List<Discount>> applicableDiscounts = singletonMap(ecg, emptyList());
